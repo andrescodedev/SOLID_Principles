@@ -89,6 +89,15 @@ class BookRegistrationService {
     registerBook(bookRegistration) {
         this.bookRegistrationRepository.saveBook(bookRegistration);
     }
+
+    //This is a new method for registration of many books
+    registerBooks(booksRegistration) {
+        for(let book of booksRegistration) {
+            this.bookRegistrationRepository.saveBook(book);
+        }
+
+        console.log(`Books registered successfully`);
+    }
 }
 
 class BookListingService {
@@ -98,6 +107,7 @@ class BookListingService {
         return this.bookListingRepository.listAllBooks();
     }
 
+    //This is a new method for listing books by author
     getBooksByAuthor(author) {
         return this.bookListingRepository.listBooksByAuthor(author);
     }
@@ -109,10 +119,8 @@ class BookRepository {
 }
 
 class BookRegistrationRepository extends BookRepository {
-
     saveBook(bookRegistration) {
         BookRepository.booksDB.push(bookRegistration);
-        console.log(`Book registered successfully`);
     }
 }
 
@@ -121,8 +129,9 @@ class BookListingRepository extends BookRepository {
         return BookRepository.booksDB;
     }
 
+    //This is a new method for listing books by author
     listBooksByAuthor(author) {
-        return this.booksDB.filter(book => book.author === author);
+        return BookRepository.booksDB.filter(register => register.book.author === author);
     }
 }
 
@@ -142,6 +151,11 @@ class UserListingService {
     getAllUsers() {
         return this.userListingRepository.listAllUsers();
     }
+
+    //This is a new method for listing user by identification
+    getUserByIdentification(numIdentification) {
+        return this.userListingRepository.listUserByIdentification(numIdentification);
+    }
 }
 
 // Repositories
@@ -159,6 +173,11 @@ class UserRegistrationRepository extends UserRepository {
 class UserListingRepository extends UserRepository {
     listAllUsers() {
         return UserRepository.usersDB;
+    }
+
+    //This is a new method for listing user by identification
+    listUserByIdentification(numIdentification) {
+        return UserRepository.usersDB.filter(register => register.user.numIdentification === numIdentification);
     }
 }
 
@@ -204,28 +223,41 @@ class BookRefundRepository extends LoanRepository{
 const book1 = new Book('Dragon ball','Akira Toriyama',3);
 const book2 = new Book('Dragon ball z','Akira Toriyama',1);
 const book3 = new Book('Dragon ball daima','Akira Toriyama',1);
+const book4 = new Book('Materia Oscura','Stephen Hawking',2);
 
 // Users to the registration
 const user1 = new User('123','Andrew','andrewn@hotmail.com');
 const user2 = new User('456','Nolan','jnolan@hotmail.com');
 
 // BOOKS REGISTRATION PROCESS
-/*const bookListingService = new BookListingService();
+const bookListingService = new BookListingService();
 const bookRegistrationService = new BookRegistrationService();
 
+let booksToRegistration = [];
+
 const bookRegistration1 = new BookRegistration(book1,'09/11/2024');
-bookRegistrationService.registerBook(bookRegistration1);
+//bookRegistrationService.registerBook(bookRegistration1);
+booksToRegistration.push(bookRegistration1);
 
 const bookRegistration2 = new BookRegistration(book2,'10/11/2024');
-bookRegistrationService.registerBook(bookRegistration2);
+//bookRegistrationService.registerBook(bookRegistration2);
+booksToRegistration.push(bookRegistration2);
 
 const bookRegistration3 = new BookRegistration(book3,'10/11/2024');
-bookRegistrationService.registerBook(bookRegistration3);
+//bookRegistrationService.registerBook(bookRegistration3);
+booksToRegistration.push(bookRegistration3);
 
-console.log(bookListingService.getAllBooks());*/
+const bookRegistration4 = new BookRegistration(book4,'10/11/2024');
+//bookRegistrationService.registerBook(bookRegistration4);
+booksToRegistration.push(bookRegistration4);
+
+bookRegistrationService.registerBooks(booksToRegistration);
+
+console.log(bookListingService.getAllBooks());
+//console.log(bookListingService.getBooksByAuthor(book4.author));
 
 // USERS REGISTRATION PROCESS
-/*const userListingService = new UserListingService();
+const userListingService = new UserListingService();
 const userRegistrationService = new UserRegistrationService();
 
 const userRegistration1 = new UserRegistration(user1,'10/11/2024');
@@ -234,10 +266,11 @@ userRegistrationService.registerUser(userRegistration1);
 const userRegistration2 = new UserRegistration(user2,'10/11/2024');
 userRegistrationService.registerUser(userRegistration2);
 
-console.log(userListingService.getAllUsers());*/
+console.log(userListingService.getAllUsers());
+//console.log(userListingService.getUserByIdentification(user2.numIdentification));
 
 // BOOKS LOAN PROCESS
-const bookLoanService = new BookLoanService();
+/*const bookLoanService = new BookLoanService();
 
 const loan1 = new Loan(user1,book2,'09/11/2024');
 bookLoanService.lendBook(loan1);
@@ -248,7 +281,7 @@ bookLoanService.lendBook(loan2);
 const loan3 = new Loan(user2,book1,'07/11/2024');
 bookLoanService.lendBook(loan3);
 
-console.log(LoanRepository.bookLoanDB);
+console.log(LoanRepository.bookLoanDB);*/
 
 
 
