@@ -41,8 +41,6 @@ class Book {
         this.author = author;
         this.availableCopies = availableCopies;
     }
-
-
 }
 
 class User {
@@ -50,6 +48,20 @@ class User {
         this.numIdentification = numIdentification;
         this.name = name;
         this.email = email;
+    }
+}
+
+class BookRegistration {
+    constructor(book, registrationDate) {
+        this.book = book;
+        this.registrationDate = registrationDate;
+    }
+}
+
+class UserRegistration {
+    constructor(user, registrationDate) {
+        this.user = user;
+        this.registrationDate = registrationDate;
     }
 }
 
@@ -74,8 +86,8 @@ class Refund {
 class BookRegistrationService {
     bookRegistrationRepository = new BookRegistrationRepository();
     
-    registerBook(book) {
-        this.bookRegistrationRepository.saveBook(book);
+    registerBook(bookRegistration) {
+        this.bookRegistrationRepository.saveBook(bookRegistration);
     }
 }
 
@@ -93,19 +105,20 @@ class BookListingService {
 
 // Repositories
 class BookRepository {
-    booksDB = [];
+    static booksDB = [];
 }
 
 class BookRegistrationRepository extends BookRepository {
-    saveBook(book) {
-        this.booksDB.push(book);
+
+    saveBook(bookRegistration) {
+        BookRepository.booksDB.push(bookRegistration);
         console.log(`Book registered successfully`);
     }
 }
 
 class BookListingRepository extends BookRepository {
     listAllBooks() {
-        return this.booksDB;
+        return BookRepository.booksDB;
     }
 
     listBooksByAuthor(author) {
@@ -118,8 +131,8 @@ class BookListingRepository extends BookRepository {
 class UserRegistrationService {
     userRegistrationRepository = new UserRegistrationRepository();
 
-    registerUser(user) {
-        this.userRegistrationRepository.saveUser(user);
+    registerUser(userRegistration) {
+        this.userRegistrationRepository.saveUser(userRegistration);
     }
 }
 
@@ -133,48 +146,109 @@ class UserListingService {
 
 // Repositories
 class UserRepository {
-    usersDB = [];
+    static usersDB = [];
 }
 
 class UserRegistrationRepository extends UserRepository {
-    saveUser(user) {
-        this.usersDB.push(user);
+    saveUser(userRegistration) {
+        UserRepository.usersDB.push(userRegistration);
         console.log(`User registered successfully`);
     }
 }
 
 class UserListingRepository extends UserRepository {
     listAllUsers() {
-        return this.usersDB;
+        return UserRepository.usersDB;
     }
 }
 
 // LOAN MANAGEMENT MODULE
+// Services
 class BookLoanService {
-    bookLoanDB = [];
+    bookLoanRepository = new BookLoanRepository();
 
-    bookLoan(loan) {
-        this.bookLoanDB.push(loan);
+    lendBook(loan) {
+        this.bookLoanRepository.saveLoan(loan);
     }
 }
 
 class BookRefundService {
-    bookRefundDB = [];
+    bookRefundRepository = new BookRefundRepository();
 
     bookRefund(refund) {
-        this.bookRefundDB.push(refund);
+        this.bookRefundRepository.saveRefund(refund);
     }
 }
 
+// Repositories
+class LoanRepository {
+    static bookLoanDB = [];
+    static bookRefundDB = [];
+}
+
+class BookLoanRepository extends LoanRepository {
+    saveLoan(loan) {
+    LoanRepository.bookLoanDB.push(loan);
+        console.log(`Loan registered successfully`);
+    }
+}
+
+class BookRefundRepository extends LoanRepository{
+    saveRefund(refund) {
+        LoanRepository.bookRefundDB.push(refund);
+        console.log(`Refund successfully`);
+    }
+}
+
+// Books to the registration
 const book1 = new Book('Dragon ball','Akira Toriyama',3);
 const book2 = new Book('Dragon ball z','Akira Toriyama',1);
 const book3 = new Book('Dragon ball daima','Akira Toriyama',1);
 
+// Users to the registration
 const user1 = new User('123','Andrew','andrewn@hotmail.com');
 const user2 = new User('456','Nolan','jnolan@hotmail.com');
 
-/*const loan1 = new Loan(user1,book2,'09/11/2024');
-const loan2 = new Loan(user1,book3,'09/11/2024');
-const loan3 = new Loan(user2,book1,'07/11/2024');*/
+// BOOKS REGISTRATION PROCESS
+/*const bookListingService = new BookListingService();
+const bookRegistrationService = new BookRegistrationService();
 
-console.log()
+const bookRegistration1 = new BookRegistration(book1,'09/11/2024');
+bookRegistrationService.registerBook(bookRegistration1);
+
+const bookRegistration2 = new BookRegistration(book2,'10/11/2024');
+bookRegistrationService.registerBook(bookRegistration2);
+
+const bookRegistration3 = new BookRegistration(book3,'10/11/2024');
+bookRegistrationService.registerBook(bookRegistration3);
+
+console.log(bookListingService.getAllBooks());*/
+
+// USERS REGISTRATION PROCESS
+/*const userListingService = new UserListingService();
+const userRegistrationService = new UserRegistrationService();
+
+const userRegistration1 = new UserRegistration(user1,'10/11/2024');
+userRegistrationService.registerUser(userRegistration1);
+
+const userRegistration2 = new UserRegistration(user2,'10/11/2024');
+userRegistrationService.registerUser(userRegistration2);
+
+console.log(userListingService.getAllUsers());*/
+
+// BOOKS LOAN PROCESS
+const bookLoanService = new BookLoanService();
+
+const loan1 = new Loan(user1,book2,'09/11/2024');
+bookLoanService.lendBook(loan1);
+
+const loan2 = new Loan(user1,book3,'09/11/2024');
+bookLoanService.lendBook(loan2);
+
+const loan3 = new Loan(user2,book1,'07/11/2024');
+bookLoanService.lendBook(loan3);
+
+console.log(LoanRepository.bookLoanDB);
+
+
+
