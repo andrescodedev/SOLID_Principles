@@ -22,7 +22,7 @@ class InterfaceTemplate {
 }
 
 class InterfaceGps extends InterfaceTemplate {
-
+    //methods without implementation and that they aren't statics
     static gpsMethods = {
         getCoordinates: function () { }
     }
@@ -30,7 +30,7 @@ class InterfaceGps extends InterfaceTemplate {
 
 class InterfaceRadio extends InterfaceTemplate {
 
-    //Define methods without functionality
+    //methods without implementation and that they aren't statics
     static radioMethods = {
         startRadio: function () { },
         stopRadio: function () { },
