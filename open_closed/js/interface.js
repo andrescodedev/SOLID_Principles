@@ -31,14 +31,14 @@ class Circle {
 
 //INTERFACES FOR SERVICES
 class InterfaceTemplate {
-    constructor(interfaceTemplate) {
-        if (this.constructor === interfaceTemplate) {
+    constructor() {
+        if (this.constructor) {
             throw new Error(`You can't create an instance for an interface`);
         }
     }
 
-    //Method to ensure interface's methods implementation
-    ensureInterfaceImplementation(template, interfaceMethods) {
+
+    static ensureInterfaceImplementation(template, interfaceMethods) {
         for (const method in interfaceMethods) {
 
             if (!(method in template.prototype) ||
@@ -50,73 +50,101 @@ class InterfaceTemplate {
 }
 
 class InterfacePerimeterCalculatorService extends InterfaceTemplate {
-    perimeter;
-
-    #perimeterCalculatorMethods = {
-        computePerimeter: function () { }
+    static perimeterCalculatorMethods = {
+        computePerimeter: function (geometricShape) { }
     }
+}
 
-    constructor() {
-        super(InterfacePerimeterCalculatorService);
-    }
-
-    ensureInterfaceImplementation(template) {
-        super.ensureInterfaceImplementation(template, this.#perimeterCalculatorMethods);
+class InterfacePerimeterShowService extends InterfaceTemplate {
+    static perimeterShowMethods = {
+        showPerimeter: function () { },
+        getPerimeterCalculate: function () { }
     }
 }
 
 class InterfaceAreaCalculatorService extends InterfaceTemplate {
-    area;
-
-    //Define methods without functionality
-    #areaCalculatorMethods = {
+    static areaCalculatorMethods = {
         computeArea: function (geometricShape) { }
     }
+}
 
-    constructor() {
-        super(InterfaceAreaCalculatorService);
+class InterfaceAreaShowService extends InterfaceTemplate {
+    static areaShowMethods = {
+        showArea: function () { },
+        getAreaCalculate: function () { }
     }
-
-    //Method to ensure interface's methods implementation
-    ensureInterfaceImplementation(template) {
-        super.ensureInterfaceImplementation(template, this.#areaCalculatorMethods);
-    }
-
 }
 
 //SERVICES TO CALCULATE THE PERIMETER
-class RectanglePerimeterCalculatorService extends InterfacePerimeterCalculatorService {
-    //Implementing an interface
-    //This class must implement all the methods defined in the interface
+class RectangleShapePerimeterCalculatorService {
+
     constructor() {
-        super();
-        this.ensureInterfaceImplementation(RectanglePerimeterCalculatorService);
+        InterfacePerimeterCalculatorService.ensureInterfaceImplementation(
+            RectangleShapePerimeterCalculatorService,
+            InterfacePerimeterCalculatorService.perimeterCalculatorMethods
+        );
     }
 
-    computePerimeter(rectangle) {
-        this.perimeter = (rectangle.width*2) + (rectangle.heigth*2);
+    computePerimeter(rectangleShape) {
+        return (rectangleShape.width * 2) + (rectangleShape.heigth * 2);
+    }
+}
 
-        return console.log(`The rectangle perimeter is ${this.perimeter}`);
+class RectangleShapePerimeterShowService {
+    #perimeter;
+
+    constructor() {
+        InterfacePerimeterShowService.ensureInterfaceImplementation(
+            RectangleShapePerimeterShowService,
+            InterfacePerimeterShowService.perimeterShowMethods
+        );
+    }
+
+    showPerimeter() {
+        console.log(`The rectangle perimeter is ${this.#perimeter}`);
+    }
+
+    getPerimeterCalculate(rectangleShape) {
+        const rectangleShapePerimeterCalculatorService = new RectangleShapePerimeterCalculatorService();
+        this.#perimeter = rectangleShapePerimeterCalculatorService.computePerimeter(rectangleShape);
     }
 }
 
 //SERVICES TO CALCULATE THE AREA
-class RectangleAreaCalculatorService extends InterfaceAreaCalculatorService {
-    //Implementing an interface
-    //This class must implement all the methods defined in the interface
+class RectangleShapeAreaCalculatorService {
     constructor() {
-        super();
-        this.ensureInterfaceImplementation(RectangleAreaCalculatorService);
+        InterfaceAreaCalculatorService.ensureInterfaceImplementation(
+            RectangleShapeAreaCalculatorService,
+            InterfaceAreaCalculatorService.areaCalculatorMethods
+        );
     }
 
-    computeArea(rectangle) {
-        this.area = rectangle.width * rectangle.heigth;
-
-        return console.log(`The rectangle area is ${this.area}`);
+    computeArea(rectangleShape) {
+        return rectangleShape.width * rectangleShape.heigth;
     }
 }
 
-class SquareAreaCalculatorService extends InterfaceAreaCalculatorService {
+class RectangleShapeAreaShowService {
+    #area;
+
+    constructor() {
+        InterfaceAreaShowService.ensureInterfaceImplementation(
+            RectangleShapeAreaShowService,
+            InterfaceAreaShowService.areaShowMethods
+        );
+    }
+
+    showArea() {
+        console.log(`The rectangle area is ${this.#area}`);
+    }
+
+    getAreaCalculate(rectangleShape) {
+        const rectangleShapeAreaCalculatorService = new RectangleShapeAreaCalculatorService();
+        this.#area = rectangleShapeAreaCalculatorService.computeArea(rectangleShape);
+    }
+}
+
+/*class SquareAreaCalculatorService extends InterfaceAreaCalculatorService {
     constructor() {
         super();
         this.ensureInterfaceImplementation(SquareAreaCalculatorService);
@@ -153,33 +181,35 @@ class CircleAreaCalculatorService extends InterfaceAreaCalculatorService {
 
         return console.log(`The circle area is ${this.area}`);
     }
-}
+}*/
 
 
 //INTANCES FOR THE PERIMETER SERVICES
-const rectanglePerimeterCalculatorService = new RectanglePerimeterCalculatorService();
+const rectangleShapePerimeterCalculatorService = new RectangleShapePerimeterShowService();
 
 const rectangle = new Rectangle(2, 5);
-rectanglePerimeterCalculatorService.computePerimeter(rectangle);
+rectangleShapePerimeterCalculatorService.getPerimeterCalculate(rectangle);
+rectangleShapePerimeterCalculatorService.showPerimeter();
 
 
 //INTANCES FOR THE AREA SERVICES
-const rectangleAreaCalculatorService = new RectangleAreaCalculatorService();
-const squareAreaCalculatorService = new SquareAreaCalculatorService();
+const rectangleShapeAreaCalculatorService = new RectangleShapeAreaShowService();
+/*const squareAreaCalculatorService = new SquareAreaCalculatorService();
 const triangleAreaCalculatorService = new TriangleAreaCalculatorService();
-const circleAreaCalculatorService = new CircleAreaCalculatorService();
+const circleAreaCalculatorService = new CircleAreaCalculatorService();*/
 
-const rectangle2 = new Rectangle(2, 5);
-rectangleAreaCalculatorService.computeArea(rectangle2);
+const rectangle2 = new Rectangle(3, 5);
+rectangleShapeAreaCalculatorService.getAreaCalculate(rectangle2);
+rectangleShapeAreaCalculatorService.showArea();
 
-const square = new Square(5);
+/*const square = new Square(5);
 squareAreaCalculatorService.computeArea(square);
 
 const triangle = new Triangle(2, 9);
 triangleAreaCalculatorService.computeArea(triangle);
 
 const circle = new Circle(2);
-circleAreaCalculatorService.computeArea(circle);
+circleAreaCalculatorService.computeArea(circle);*/
 
 /*class InterfazMetodo {
     static interfaceMethods = {
